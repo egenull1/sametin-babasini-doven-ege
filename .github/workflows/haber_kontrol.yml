@@ -5,7 +5,7 @@ name: Haber Kontrolü
 on:
   schedule:
     # Her 5 dakikada bir çalışır
-    - cron: '*/5 * * * *'
+    - cron: '*/9 * * * *'
     
   # Bu satır, GitHub'daki Actions sekmesinden manuel olarak da çalıştırabilmeni sağlar.
   workflow_dispatch:
