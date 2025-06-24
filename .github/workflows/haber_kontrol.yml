@@ -4,10 +4,8 @@ name: Haber Kontrolü
 # Bu iş akışının ne zaman çalışacağını belirleyen bölüm
 on:
   schedule:
-    # Bu "cron" zamanlaması, script'in her saat başı otomatik olarak çalışmasını sağlar.
-    # Dakikayı '*/30' yaparsan her 30 dakikada bir çalışır.
+    # Her 5 dakikada bir çalışır
     - cron: '*/5 * * * *'
-
     
   # Bu satır, GitHub'daki Actions sekmesinden manuel olarak da çalıştırabilmeni sağlar.
   workflow_dispatch:
@@ -15,8 +13,12 @@ on:
 # Yapılacak işleri tanımladığımız bölüm
 jobs:
   build:
-    # İşin çalışacağı sanal makine türü (ubuntu en yaygın ve stabil olanıdır)
+    # İşin çalışacağı sanal makine türü
     runs-on: ubuntu-latest
+
+    # YAZMA İZNİ: Bu bölüm, action'ın repoya commit atabilmesi için gereklidir.
+    permissions:
+      contents: write
 
     # İşin adımları
     steps:
@@ -40,10 +42,9 @@ jobs:
       - name: Haberleri Kontrol Et
         run: python haber.py
 
-      # 5. Adım: Değişen JSON dosyalarını repoya geri kaydeder (ÇOK ÖNEMLİ)
+      # 5. Adım: Değişen JSON dosyalarını repoya geri kaydeder
       - name: Değişen JSON Dosyalarını Kaydet
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Haberler otomatik olarak güncellendi"
-          # Sadece .json uzantılı dosyalardaki değişiklikleri işle
-          file_pattern: '*.json'
+          file_pattern: '*.json' # Sadece .json uzantılı dosyaları işle
