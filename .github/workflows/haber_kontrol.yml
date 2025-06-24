@@ -1,0 +1,48 @@
+# İş akışının adı
+name: Haber Kontrolü
+
+# Bu iş akışının ne zaman çalışacağını belirleyen bölüm
+on:
+  schedule:
+    # Bu "cron" zamanlaması, script'in her saat başı otomatik olarak çalışmasını sağlar.
+    # Dakikayı '*/30' yaparsan her 30 dakikada bir çalışır.
+    - cron: '0 * * * *'
+    
+  # Bu satır, GitHub'daki Actions sekmesinden manuel olarak da çalıştırabilmeni sağlar.
+  workflow_dispatch:
+
+# Yapılacak işleri tanımladığımız bölüm
+jobs:
+  build:
+    # İşin çalışacağı sanal makine türü (ubuntu en yaygın ve stabil olanıdır)
+    runs-on: ubuntu-latest
+
+    # İşin adımları
+    steps:
+      # 1. Adım: Repodaki kodları sanal makineye klonlar
+      - name: Kodları Çek
+        uses: actions/checkout@v4
+
+      # 2. Adım: Belirttiğimiz Python versiyonunu kurar
+      - name: Python 3.9 Kurulumu
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      # 3. Adım: Script'in çalışması için gerekli kütüphaneleri yükler
+      - name: Gerekli Kütüphaneleri Yükle
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 lxml
+
+      # 4. Adım: Ana Python script'imizi çalıştırır
+      - name: Haberleri Kontrol Et
+        run: python haber.py
+
+      # 5. Adım: Değişen JSON dosyalarını repoya geri kaydeder (ÇOK ÖNEMLİ)
+      - name: Değişen JSON Dosyalarını Kaydet
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Haberler otomatik olarak güncellendi"
+          # Sadece .json uzantılı dosyalardaki değişiklikleri işle
+          file_pattern: '*.json'
