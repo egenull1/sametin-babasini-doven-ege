@@ -6,7 +6,8 @@ on:
   schedule:
     # Bu "cron" zamanlaması, script'in her saat başı otomatik olarak çalışmasını sağlar.
     # Dakikayı '*/30' yaparsan her 30 dakikada bir çalışır.
-    - cron: '0 * * * *'
+    - cron: '*/5 * * * *'
+
     
   # Bu satır, GitHub'daki Actions sekmesinden manuel olarak da çalıştırabilmeni sağlar.
   workflow_dispatch:
